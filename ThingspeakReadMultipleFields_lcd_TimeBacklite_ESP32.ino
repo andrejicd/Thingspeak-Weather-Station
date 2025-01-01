@@ -50,9 +50,7 @@ void setup() {
     Serial.println("\nConnected");
   }
 
-  // Set the initial time for demonstration purposes
-  //setTime(5, 34, 0, 20, 12, 2024);  // hr, min, sec, day, month, year
-}
+  }
 
 void loop() {
   timeClient.update();
