@@ -64,9 +64,10 @@ void loop() {
   int currentHour = hour(currentTime);
   int currentMinute = minute(currentTime);
 
-  // Backlight control based on time
-  bool shouldBacklightBeOn = !((currentHour == 22 && currentMinute >= 30) || (currentHour > 22) || (currentHour < 6) || (currentHour == 6 && currentMinute < 15));
-  
+// Backlight control based on time
+    bool shouldBacklightBeOn = (currentHour > BACKLIGHT_ON_HOUR || (currentHour == BACKLIGHT_ON_HOUR && currentMinute >= BACKLIGHT_ON_MINUTE)) &&
+                               (currentHour < BACKLIGHT_OFF_HOUR || (currentHour == BACKLIGHT_OFF_HOUR && currentMinute < BACKLIGHT_OFF_MINUTE));
+
   if (shouldBacklightBeOn != backlightState) {
     backlightState = shouldBacklightBeOn;
     if (backlightState) {
@@ -125,6 +126,8 @@ void loop() {
     lcd.print(" ");
     
     // Blink logic
+     bool wasBacklightOn = backlightState; // Save the current backlight state
+    
     if (field4 > 150) {
       for (int i = 0; i < 10; i++) {
         lcd.noBacklight();
@@ -147,7 +150,14 @@ void loop() {
         delay(550);
       }
     }
-
+// Reset the backlight state to the previous state
+        if (!wasBacklightOn) {
+            lcd.noBacklight();
+            Serial.println("Backlight OFF (restored)");
+        } else {
+            lcd.backlight();
+            Serial.println("Backlight ON (restored)");
+        }
     delay(10000);  
     lcd.clear();
     lcd.setCursor(1, 0);
